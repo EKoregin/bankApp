@@ -1,6 +1,8 @@
 
 package ru.korevg.currency.schema;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -8,8 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -57,7 +57,7 @@ import java.util.List;
 public class ValCurs {
 
     @XmlElement(name = "Valute", required = true)
-    protected List<Valute> valute;
+    protected List<ValCurs.Valute> valute;
     @XmlAttribute(name = "Date", required = true)
     protected String date;
     @XmlAttribute(name = "name", required = true)
@@ -81,13 +81,13 @@ public class ValCurs {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Valute }
+     * {@link ValCurs.Valute }
      * 
      * 
      */
-    public List<Valute> getValute() {
+    public List<ValCurs.Valute> getValute() {
         if (valute == null) {
-            valute = new ArrayList<Valute>();
+            valute = new ArrayList<ValCurs.Valute>();
         }
         return this.valute;
     }
