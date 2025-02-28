@@ -1,7 +1,8 @@
 package ru.korevg.currency.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.korevg.currency.schema.ValCurs;
@@ -16,22 +17,37 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class CbrService {
 
     public static final String BASE_URL = "https://cbr.ru/scripts/XML_daily.asp?";
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private final ConcurrentHashMap<LocalDate, Map<String, BigDecimal>> cache = new ConcurrentHashMap<>();
+
     private final WebClient webClient;
+    private final Cache cache;
+
+    public CbrService(WebClient webClient, CacheManager cacheManager) {
+        this.webClient = webClient;
+        this.cache = cacheManager.getCache("dataCache");
+    }
 
     public BigDecimal requestByCurrencyCode(String currencyCode) {
         var currentDate = LocalDate.now();
-        return cache.computeIfAbsent(currentDate, this::fetchAndCacheCurrencies).get(currencyCode);
+        Map<String, BigDecimal> currencies = cache.get(currentDate, Map.class);
+        if (currencies == null) {
+            currencies = fetchAndCacheCurrencies(currentDate);
+            cache.put(currentDate, currencies);
+        }
+
+        BigDecimal value = currencies.get(currencyCode);
+        if (value == null) {
+            log.warn("Currency code {} not found", currencyCode);
+        }
+
+        return value;
     }
 
     /**
@@ -55,7 +71,7 @@ public class CbrService {
                     .collect(Collectors.toMap(ValCurs.Valute::getCharCode, currency->
                             new BigDecimal(currency.getValue().replace(",", "."))));
         } catch (Exception e) {
-            log.debug("Ошибка получения курса валют для  даты {}", date);
+            log.error("Ошибка получения курса валют для  даты {}", date);
             return Collections.emptyMap();
         }
     }
