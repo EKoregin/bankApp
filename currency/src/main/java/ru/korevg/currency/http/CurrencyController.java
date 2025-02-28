@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @RequestMapping("/currency/v1")
 public class CurrencyController {
 
-    private final CbrService cbrService;
+    private final CbrService currencyService;
 
     @GetMapping("/getCurrency")
     @Operation(description = "Получение курса валюты по коду на требуемую дату")
@@ -28,6 +28,6 @@ public class CurrencyController {
             @RequestParam("code") String code,
             @Parameter(description = "курс на дату")
             @RequestParam(required = false) LocalDate onDate) {
-        return cbrService.requestByCurrencyCodeAndDate(onDate, code.toUpperCase());
+        return currencyService.requestByCurrencyCodeAndDate(onDate, code.toUpperCase());
     }
 }

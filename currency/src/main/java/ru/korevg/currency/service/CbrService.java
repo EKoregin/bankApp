@@ -6,6 +6,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.korevg.currency.config.AppConfig;
 import ru.korevg.currency.schema.ValCurs;
 
 import javax.xml.bind.JAXBContext;
@@ -24,13 +25,15 @@ import java.util.stream.Collectors;
 @Service
 public class CbrService {
 
-    public static final String BASE_URL = "https://cbr.ru/scripts/XML_daily.asp?";
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final AppConfig appConfig;
 
     private final WebClient webClient;
     private final Cache cache;
 
-    public CbrService(WebClient webClient, CacheManager cacheManager) {
+    public CbrService(AppConfig appConfig, WebClient webClient, CacheManager cacheManager) {
+        this.appConfig = appConfig;
         this.webClient = webClient;
         this.cache = cacheManager.getCache("dataCache");
     }
@@ -59,7 +62,8 @@ public class CbrService {
      */
     private Map<String, BigDecimal> fetchAndCacheCurrencies(LocalDate date) {
         try {
-            String cbrUrl =  String.format(BASE_URL + "date_req=%s", date.format(DATE_FORMATTER));
+            String baseUrl = appConfig.getUrl();
+            String cbrUrl =  String.format(baseUrl + "date_req=%s", date.format(DATE_FORMATTER));
 
             var response = Objects.requireNonNull(webClient.get()
                             .uri(cbrUrl)
