@@ -1,0 +1,14 @@
+server:
+  port: 8181
+
+logging:
+  level:
+    root: info
+
+spring:
+  application:
+    name: currency
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
