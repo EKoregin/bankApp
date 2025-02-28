@@ -1,5 +1,6 @@
 package ru.korevg.currency.service;
 
+import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -34,12 +35,14 @@ public class CbrService {
         this.cache = cacheManager.getCache("dataCache");
     }
 
-    public BigDecimal requestByCurrencyCode(String currencyCode) {
-        var currentDate = LocalDate.now();
-        Map<String, BigDecimal> currencies = cache.get(currentDate, Map.class);
+    public BigDecimal requestByCurrencyCodeAndDate(@Nullable LocalDate date, String currencyCode) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        Map<String, BigDecimal> currencies = cache.get(date, Map.class);
         if (currencies == null) {
-            currencies = fetchAndCacheCurrencies(currentDate);
-            cache.put(currentDate, currencies);
+            currencies = fetchAndCacheCurrencies(date);
+            cache.put(date, currencies);
         }
 
         BigDecimal value = currencies.get(currencyCode);
