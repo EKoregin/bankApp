@@ -21,3 +21,6 @@ spring:
     user: postgres
     password: password
 
+currency-service:
+  host: localhost
+  port: 8181

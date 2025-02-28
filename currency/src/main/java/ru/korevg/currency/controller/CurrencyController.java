@@ -1,4 +1,4 @@
-package ru.korevg.currency.http;
+package ru.korevg.currency.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
