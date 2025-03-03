@@ -1,1 +1,5 @@
 /.idea/
+/eureka-service/.gitattributes
+/eureka-service/mvnw
+/eureka-service/mvnw.cmd
+/eureka-service/.mvn/

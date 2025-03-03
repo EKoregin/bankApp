@@ -21,6 +21,12 @@ spring:
     user: postgres
     password: password
 
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 currency-service:
   host: localhost
   port: 8181
