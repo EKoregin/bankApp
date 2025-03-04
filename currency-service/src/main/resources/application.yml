@@ -1,0 +1,28 @@
+server:
+  port: 8181
+
+cloud:
+  eureka-host: localhost
+
+logging:
+  level:
+    root: info
+
+spring:
+  application:
+    name: currency-service
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+
+currency:
+  client:
+    url: "https://cbr.ru/scripts/XML_daily.asp?"
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka
+

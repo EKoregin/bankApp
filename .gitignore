@@ -3,3 +3,9 @@
 /eureka-service/mvnw
 /eureka-service/mvnw.cmd
 /eureka-service/.mvn/
+/gateway-service/.mvn/
+/gateway-service/HELP.md
+/gateway-service/mvnw
+/gateway-service/mvnw.cmd
+/gateway-service/.gitattributes
+/db/

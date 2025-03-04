@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  eureka-service:
+    build:
+      context: ./eureka-service
+    ports:
+      - "8761:8761"
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_HOST: eureka-service
+      PROCESSING_URL: http://processing-service:8182
+      CURRENCY_URL: http://currency-service:8181
+    depends_on:
+      - eureka-service
+
+  currency-service:
+    build:
+      context: ./currency-service
+    ports:
+      - "8181:8181"
+      - "8787:8787"
+    environment:
+      EUREKA_HOST: eureka-service
+    depends_on:
+      - eureka-service
+
+  processing_db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: processing
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+        - ./db/processing/data:/var/lib/postgresql/data
+    restart: always
+
+  processing-service:
+    build:
+      context: ./processing-service
+    environment:
+      DB_HOST: processing_db
+      EUREKA_HOST: eureka-service
+      CURRENCY_HOST: currency-service
+    ports:
+      - "8182:8182"
+    depends_on:
+      - processing_db
+      - eureka-service
