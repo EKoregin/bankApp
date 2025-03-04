@@ -9,3 +9,4 @@
 /gateway-service/mvnw.cmd
 /gateway-service/.gitattributes
 /db/
+/.idea/
