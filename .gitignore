@@ -10,3 +10,8 @@
 /gateway-service/.gitattributes
 /db/
 /.idea/
+/auth-service/.mvn/
+/auth-service/.gitattributes
+/auth-service/HELP.md
+/auth-service/mvnw
+/auth-service/mvnw.cmd
