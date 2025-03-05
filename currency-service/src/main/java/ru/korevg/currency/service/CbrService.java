@@ -39,6 +39,7 @@ public class CbrService {
     }
 
     public BigDecimal requestByCurrencyCodeAndDate(@Nullable LocalDate date, String currencyCode) {
+        log.info("Request service by currency code {}", currencyCode);
         if (date == null) {
             date = LocalDate.now();
         }

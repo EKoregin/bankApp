@@ -15,16 +15,33 @@ services:
     environment:
       EUREKA_HOST: eureka-service
       PROCESSING_URL: http://processing-service:8182
-      CURRENCY_URL: http://currency-service:8181
+      CURRENCY_URL: lb://currency-service
+#      CURRENCY_URL: http://currency-service:8181
+    links:
+      - currency-service-1
+      - currency-service-2
     depends_on:
       - eureka-service
 
-  currency-service:
+  currency-service-1:
     build:
       context: ./currency-service
+    hostname: currency-service-1
+    container_name: currency-service-1
     ports:
-      - "8181:8181"
-      - "8787:8787"
+      - "8281:8181"
+    environment:
+      EUREKA_HOST: eureka-service
+    depends_on:
+      - eureka-service
+
+  currency-service-2:
+    build:
+      context: ./currency-service
+    hostname: currency-service-2
+    container_name: currency-service-2
+    ports:
+      - "8381:8181"
     environment:
       EUREKA_HOST: eureka-service
     depends_on:
