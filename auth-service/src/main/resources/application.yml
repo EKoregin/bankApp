@@ -1,0 +1,33 @@
+server:
+  port: 9000
+
+cloud:
+#  db-host: localhost
+  eureka-host: localhost
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:h2:mem:auth-db
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+    jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
+#  jpa:
+#    database: postgresql
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+#  datasource:
+#    url: jdbc:postgresql://${cloud.db-host}:5432/auth
+#    username: postgres
+#    password: password
+#    driver-class-name: org.postgresql.Driver
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka

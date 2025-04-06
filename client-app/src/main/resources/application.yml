@@ -1,0 +1,30 @@
+server:
+  port: 8090
+
+cloud:
+  db-host: localhost
+  eureka-host: localhost
+  currency-host: localhost
+  currency-port: 8181
+
+currency-service:
+  host: ${cloud.currency-host}
+  port: ${cloud.currency-port}
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          my_auth_server:
+            issuer-uri: http://127.0.0.1:9000
+        registration:
+          bankAppClient:
+            client-id: bankAppClient
+            client-name: My Bank
+            client-secret: secret
+            provider: my_auth_server
+            client-authentication-method: client_secret_basic
+            redirect-uri: http://localhost:8090/login/oauth2/code/{registrationId}
+            scope:
+              - openid

@@ -2,6 +2,7 @@ server:
   port: 8182
 
 cloud:
+  auth-host: localhost
   db-host: localhost
   eureka-host: localhost
   currency-host: localhost
@@ -36,3 +37,5 @@ eureka:
 currency-service:
   host: ${cloud.currency-host}
   port: ${cloud.currency-port}
+
+keySetURI: http://${cloud.auth-host}:9000/oauth2/jwks

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Список ссылок</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+  <h1>Список ссылок</h1>
+  <ul class="list-group">
+    <li class="list-group-item" th:each="link : ${links}">
+      <a th:href="${link}" th:text="${link}"></a>
+    </li>
+  </ul>
+  <a href="/logout" class="dashboard-nav-item"><i class="fas fa-sign-out-alt"></i>Выйти</a>
+</div>
+</body>
+</html>

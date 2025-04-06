@@ -3,6 +3,7 @@ server:
 
 cloud:
   eureka-host: localhost
+  auth-host: localhost
 
 logging:
   level:
@@ -26,3 +27,4 @@ eureka:
     service-url:
       defaultZone: http://${cloud.eureka-host}:8761/eureka
 
+keySetURI: http://${cloud.auth-host}:9000/oauth2/jwks

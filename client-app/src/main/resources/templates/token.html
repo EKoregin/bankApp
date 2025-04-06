@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Токен</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="alert alert-info" th:if="${token}">
+        <strong>Пользователь:</strong> <span th:text="${username}"></span><br>
+        <strong>Токен:</strong> <span th:text="${token}"></span><br>
+        <strong>Тип токена:</strong> <span th:text="${tokenType}"></span><br>
+        <strong>Действителен до:</strong> <span th:text="${expiresAt}"></span>
+    </div>
+    <div th:if="${token == null}" class="alert alert-warning">
+        Токен не найден.
+    </div>
+    <a href="/" class="btn btn-primary mt-3">На главную</a>
+</div>
+</body>
+</html>
