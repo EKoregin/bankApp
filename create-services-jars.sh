@@ -3,7 +3,7 @@
 # Проверка, был ли передан аргумент
 if [ $# -eq 0 ]; then
     # Если аргумент не передан, создаем jar для всех сервисов
-    services=("eureka-service" "currency-service" "gateway-service" "processing-service")
+    services=("eureka-service" "currency-service" "gateway-service" "processing-service" "auth-service" "client-app")
 else
     # Если аргумент передан, используем его как имя сервиса
     services=($1)

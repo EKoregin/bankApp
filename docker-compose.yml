@@ -16,6 +16,8 @@ services:
       EUREKA_HOST: eureka-service
       PROCESSING_URL: http://processing-service:8182
       CURRENCY_URL: lb://currency-service
+      BANK_APP_URL: http://bank-app-web:8090
+      AUTH_SERVICE_URL: http://auth-service:9000
 #      CURRENCY_URL: http://currency-service:8181
     links:
       - currency-service-1
@@ -32,6 +34,7 @@ services:
       - "8281:8181"
     environment:
       EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
     depends_on:
       - eureka-service
 
@@ -44,8 +47,37 @@ services:
       - "8381:8181"
     environment:
       EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
     depends_on:
       - eureka-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+    hostname: auth-service
+    container_name: auth-service
+    ports:
+      - "9000:9000"
+    environment:
+      EUREKA_HOST: eureka-service
+      BANK_APP_URL: http://localhost:8080
+    depends_on:
+      - eureka-service
+
+  bank-app-web:
+    build:
+      context: ./client-app
+    hostname: client-app
+    container_name: client-app
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+      CURRENCY_HOST: currency-service
+    depends_on:
+      - eureka-service
+      - auth-service
 
   processing_db:
     image: postgres
@@ -65,6 +97,7 @@ services:
       DB_HOST: processing_db
       EUREKA_HOST: eureka-service
       CURRENCY_HOST: currency-service
+      AUTH_HOST: auth-service
     ports:
       - "8182:8182"
     depends_on:

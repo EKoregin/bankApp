@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -34,6 +35,10 @@ import java.util.UUID;
 @Configuration
 public class AuthorizationServerConfig {
 
+    @Value("${cloud.bank-app-url}")
+    private String bankAppUrl;
+
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -51,23 +56,13 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .scope(OidcScopes.OPENID)
-                .redirectUri("http://localhost:8090/login/oauth2/code/bankAppClient")
+                .redirectUri(bankAppUrl + "/login/oauth2/code/bankAppClient")
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofHours(3))
                         .build())
                 .build();
 
-        RegisteredClient bankAppClientService = RegisteredClient
-                .withId(UUID.randomUUID().toString())
-                .clientId("bankAppService")
-                .clientSecret(passwordEncoder.encode("secret"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope("services")
-                .redirectUri("http://localhost:8090/login/oauth2/code/my_auth_server")
-                .build();
-
-        return new InMemoryRegisteredClientRepository(bankAppClientWeb, bankAppClientService);
+        return new InMemoryRegisteredClientRepository(bankAppClientWeb);
     }
 
     @Bean

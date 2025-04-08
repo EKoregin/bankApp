@@ -5,10 +5,33 @@ cloud:
   eureka-host: localhost
   processing-service-url: http://localhost:8182
   currency-service-url: http://localhost:8181
+  bank-app-url: http://localhost:8090
+  auth-service-url: http://localhost:9000
 
 spring:
   application:
    name: api-gateway-service
+  security:
+    oauth2:
+      client:
+        provider:
+          my_auth_server:
+            issuer-uri: http://localhost:9000
+        registration:
+          bankAppClient:
+            client-id: bankAppClient
+            client-name: My Bank
+            client-secret: secret
+            provider: my_auth_server
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            scope:
+              - openid
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+
   cloud:
     gateway:
       discovery:
@@ -24,11 +47,20 @@ spring:
           uri: ${cloud.processing-service-url}
           predicates:
             - Path=/processing/**
+        - id: bank-app-web
+          uri: ${cloud.bank-app-url}
+          predicates:
+            - Path=/bank/**
+        - id: auth-service
+          uri: ${cloud.auth-service-url}
+          predicates:
+            - Path=/auth/**
 
 eureka:
   client:
     service-url:
       defaultZone: http://${cloud.eureka-host}:8761/eureka
+    enabled: false
 
 logging:
   level:

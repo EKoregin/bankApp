@@ -8,7 +8,7 @@
 <body>
 <div class="container mt-5">
     <h1>Курсы валют</h1>
-    <form th:action="@{/getCurrencyRank}" method="post">
+    <form th:action="@{/bank/getCurrencyRank}" method="post">
         <div class="form-group">
             <label for="date">Дата:</label>
             <input type="date" id="date" name="date" class="form-control" required />
@@ -22,7 +22,7 @@
         </div>
     </form>
     <div class="mt-4">
-        <a href="/" class="btn btn-secondary">На главную</a>
+        <a href="/bank" class="btn btn-secondary">На главную</a>
     </div>
 </div>
 </body>

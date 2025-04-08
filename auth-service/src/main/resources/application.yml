@@ -1,11 +1,17 @@
 server:
   port: 9000
+  forward-headers-strategy: native
 
 cloud:
 #  db-host: localhost
   eureka-host: localhost
+  bank-app-url: http://localhost:8080
 
 spring:
+#  security:
+#    oauth2:
+#      authorizationserver:
+#        issuer: http://localhost:8080/auth
   application:
     name: auth-service
   datasource:
@@ -15,16 +21,6 @@ spring:
     password: password
     jpa:
       database-platform: org.hibernate.dialect.H2Dialect
-#  jpa:
-#    database: postgresql
-#    show-sql: true
-#    hibernate:
-#      ddl-auto: none
-#  datasource:
-#    url: jdbc:postgresql://${cloud.db-host}:5432/auth
-#    username: postgres
-#    password: password
-#    driver-class-name: org.postgresql.Driver
 
 eureka:
   client:

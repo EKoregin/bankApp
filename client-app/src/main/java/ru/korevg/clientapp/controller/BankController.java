@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/")
+@RequestMapping("/bank")
 public class BankController {
 
     private final CurrencyServiceClient currencyClient;
@@ -28,8 +28,8 @@ public class BankController {
     @GetMapping
     public String index(Model model) {
         List<String> links = new ArrayList<>();
-        links.add("http://localhost:8090/currency");
-        links.add("http://localhost:8090/token");
+        links.add("http://localhost:8080/bank/currency");
+        links.add("http://localhost:8080/bank/token");
 
         model.addAttribute("links", links);
         return "index";

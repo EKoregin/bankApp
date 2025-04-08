@@ -15,13 +15,13 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/token")
+@RequestMapping("/bank")
 public class TokenController {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm:ss");
     private final TokenFetcher tokenFetcher;
 
-    @GetMapping
+    @GetMapping("/token")
     public String getToken(Authentication authentication, Model model) {
         var token = tokenFetcher.fetchToken(null);
         model.addAttribute("username", authentication.getName());

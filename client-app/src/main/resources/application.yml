@@ -6,18 +6,21 @@ cloud:
   eureka-host: localhost
   currency-host: localhost
   currency-port: 8181
+  auth-host: 127.0.0.1
 
 currency-service:
   host: ${cloud.currency-host}
   port: ${cloud.currency-port}
 
 spring:
+  application:
+    name: bank-app-web
   security:
     oauth2:
       client:
         provider:
           my_auth_server:
-            issuer-uri: http://127.0.0.1:9000
+            issuer-uri: http://localhost:8080/oauth2
         registration:
           bankAppClient:
             client-id: bankAppClient
@@ -28,3 +31,9 @@ spring:
             redirect-uri: http://localhost:8090/login/oauth2/code/{registrationId}
             scope:
               - openid
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka
