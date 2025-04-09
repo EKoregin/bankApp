@@ -10,20 +10,22 @@ services:
   gateway-service:
     build:
       context: ./gateway-service
+    hostname: gateway-service
+    container_name: gateway-service
     ports:
       - "8080:8080"
     environment:
       EUREKA_HOST: eureka-service
       PROCESSING_URL: http://processing-service:8182
       CURRENCY_URL: lb://currency-service
-      BANK_APP_URL: http://bank-app-web:8090
+#      BANK_APP_URL: http://bank-app-web:8080
       AUTH_SERVICE_URL: http://auth-service:9000
-#      CURRENCY_URL: http://currency-service:8181
     links:
       - currency-service-1
       - currency-service-2
     depends_on:
       - eureka-service
+      - auth-service
 
   currency-service-1:
     build:
@@ -57,10 +59,11 @@ services:
     hostname: auth-service
     container_name: auth-service
     ports:
-      - "9000:9000"
+      - "9001:9000"
     environment:
       EUREKA_HOST: eureka-service
       BANK_APP_URL: http://localhost:8080
+      AUTH_SERVICE_URL: http://auth-service:9000
     depends_on:
       - eureka-service
 

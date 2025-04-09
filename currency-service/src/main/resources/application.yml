@@ -12,11 +12,11 @@ logging:
 spring:
   application:
     name: currency-service
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://localhost:9000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
 
 springdoc:
   swagger-ui:

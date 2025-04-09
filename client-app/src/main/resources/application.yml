@@ -20,7 +20,7 @@ spring:
       client:
         provider:
           my_auth_server:
-            issuer-uri: http://localhost:8080/oauth2
+            issuer-uri: http://localhost:9000
         registration:
           bankAppClient:
             client-id: bankAppClient

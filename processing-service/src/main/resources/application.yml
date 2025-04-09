@@ -9,6 +9,11 @@ cloud:
   currency-port: 8181
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
   application:
     name: exchange-processing-service
   jpa:

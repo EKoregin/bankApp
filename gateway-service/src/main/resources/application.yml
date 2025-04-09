@@ -16,7 +16,9 @@ spring:
       client:
         provider:
           my_auth_server:
-            issuer-uri: http://localhost:9000
+            authorization-uri: http://localhost:9001/oauth2/authorize
+            token-uri: ${cloud.auth-service-url}/oauth2/token
+            jwk-set-uri: ${cloud.auth-service-url}/oauth2/jwks
         registration:
           bankAppClient:
             client-id: bankAppClient
@@ -28,9 +30,6 @@ spring:
             redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
             scope:
               - openid
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000
 
   cloud:
     gateway:
@@ -47,21 +46,26 @@ spring:
           uri: ${cloud.processing-service-url}
           predicates:
             - Path=/processing/**
-        - id: bank-app-web
-          uri: ${cloud.bank-app-url}
-          predicates:
-            - Path=/bank/**
+#        - id: bank-app-web
+#          uri: ${cloud.bank-app-url}
+#          predicates:
+#            - Path=/bank/**
         - id: auth-service
           uri: ${cloud.auth-service-url}
           predicates:
-            - Path=/auth/**
+            - Path=/oauth2/**
+      default-filters:
+        - TokenRelay
 
 eureka:
   client:
     service-url:
       defaultZone: http://${cloud.eureka-host}:8761/eureka
-    enabled: false
+    enabled: true
 
 logging:
   level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web: DEBUG
     org.springframework.cloud.gateway: INFO
