@@ -1,10 +1,8 @@
-package ru.korevg.clientapp.config;
+package ru.korevg.processing.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -14,10 +12,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 
 @Slf4j
 @Configuration
-public class TokenFetcher {
-
-    @Value("${spring.security.oauth2.client.registration.interServiceClient.client-id}")
-    private String clientId;
+public class ProjectConfig {
 
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(

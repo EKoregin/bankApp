@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -23,29 +24,35 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
 
     private final ReactiveOAuth2AuthorizedClientService authorizedClientService;
 
-    /**
-     * Фильтр вытаскивает токен аутентифицированного пользователя и в запрос добавляет заголовок с токеном
-     * Все запросы, который шлюз перенаправляет к сервисам будут аутентифицированными OAuth 2 авторизацией
-     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
-                .cast(OAuth2AuthenticationToken.class)
-                .flatMap(auth -> authorizedClientService.loadAuthorizedClient(
-                                auth.getAuthorizedClientRegistrationId(),
-                                auth.getName()
-                        )
-                        .doOnNext(authClient -> log.info("User name: {}", authClient.getPrincipalName()))
-                        .map(OAuth2AuthorizedClient::getAccessToken)
-                        .map(accessToken -> {
-                            String tokenValue = accessToken.getTokenValue();
-                            log.info("Relaying JWT access token to downstream service: {}...", tokenValue.substring(0, 10));
-                            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue)
-                                    .build();
-                            return exchange.mutate().request(mutatedRequest).build();
-                        }))
+                .flatMap(auth -> {
+                    if (auth instanceof OAuth2AuthenticationToken oauth2Auth) {
+                        return authorizedClientService.loadAuthorizedClient(
+                                        oauth2Auth.getAuthorizedClientRegistrationId(),
+                                        oauth2Auth.getName()
+                                )
+                                .doOnNext(authClient -> log.info("User name: {}", authClient.getPrincipalName()))
+                                .map(OAuth2AuthorizedClient::getAccessToken)
+                                .map(accessToken -> {
+                                    String tokenValue = accessToken.getTokenValue();
+                                    log.info("Relaying JWT access token to downstream service: {}...", tokenValue);
+                                    ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue)
+                                            .build();
+                                    return exchange.mutate().request(mutatedRequest).build();
+                                })
+                                .defaultIfEmpty(exchange);
+                    } else if (auth instanceof JwtAuthenticationToken jwtAuth) {
+                        log.debug("Request already has JwtAuthenticationToken, skipping token relay.");
+                        return Mono.just(exchange);
+                    } else {
+                        log.warn("Unhandled authentication type: {}, skipping JwtRelayFilter", auth.getClass());
+                        return Mono.just(exchange);
+                    }
+                })
                 .defaultIfEmpty(exchange)
                 .flatMap(chain::filter);
     }

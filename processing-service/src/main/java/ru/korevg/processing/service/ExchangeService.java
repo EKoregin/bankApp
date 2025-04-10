@@ -3,6 +3,7 @@ package ru.korevg.processing.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,6 +23,10 @@ public class ExchangeService {
 
     private final AccountService accountService;
     private final CurrencyServiceClient currencyService;
+    private final TokenService tokenService;
+
+    @Value("${spring.security.oauth2.client.registration.interServiceClient.client-id}")
+    private String clientId;
 
     @Lazy
     @Autowired
@@ -36,15 +41,15 @@ public class ExchangeService {
 
         BigDecimal result;
         if (!CURRENCY_RUB.equals(source.getCurrencyCode()) && CURRENCY_RUB.equals(target.getCurrencyCode())) {
-            BigDecimal rate = currencyService.getCurrencyRate(source.getCurrencyCode());
+            BigDecimal rate = currencyService.getCurrencyRate(source.getCurrencyCode(), tokenService.getAccessToken(clientId, clientId));
             result = exchangeService.exchangeWithMultiply(uuid, source, target, rate, amount);
         } else if (CURRENCY_RUB.equals(source.getCurrencyCode()) && !CURRENCY_RUB.equals(target.getCurrencyCode())) {
-            BigDecimal rate = currencyService.getCurrencyRate(target.getCurrencyCode());
+            BigDecimal rate = currencyService.getCurrencyRate(target.getCurrencyCode(), tokenService.getAccessToken(clientId, clientId));
             BigDecimal multiplier = new BigDecimal(1).divide(rate, 4, RoundingMode.HALF_DOWN);
             result = exchangeService.exchangeWithMultiply(uuid, source, target, multiplier, amount);
         } else if (!CURRENCY_RUB.equals(source.getCurrencyCode()) && !CURRENCY_RUB.equals(target.getCurrencyCode())) {
-            BigDecimal rateFrom = currencyService.getCurrencyRate(source.getCurrencyCode());
-            BigDecimal rateTo = currencyService.getCurrencyRate(target.getCurrencyCode());
+            BigDecimal rateFrom = currencyService.getCurrencyRate(source.getCurrencyCode(), tokenService.getAccessToken(clientId, clientId));
+            BigDecimal rateTo = currencyService.getCurrencyRate(target.getCurrencyCode(), tokenService.getAccessToken(clientId, clientId));
             result = exchangeService.exchangeThroughRub(uuid, source, target, rateFrom, rateTo, amount);
         } else if (CURRENCY_RUB.equals(source.getCurrencyCode()) && CURRENCY_RUB.equals(target.getCurrencyCode())) {
             result = exchangeService.simpleExchange(uuid, source, target, amount);

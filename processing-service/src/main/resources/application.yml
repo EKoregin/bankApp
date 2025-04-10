@@ -14,6 +14,19 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://${cloud.auth-host}:9000
+      client:
+        provider:
+          my_auth_server:
+            token-uri: http://${cloud.auth-host}:9000/oauth2/token
+        registration:
+          interServiceClient:
+            client-id: interServiceClient
+            client-name: Inter Service Client
+            client-secret: interServiceClientSecret
+            authorization-grant-type: client_credentials
+            provider: my_auth_server
+            client-authentication-method: client_secret_basic
+            scope: internal
   application:
     name: exchange-processing-service
   jpa:
