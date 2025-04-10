@@ -14,5 +14,5 @@ public interface CurrencyServiceClient {
     @GetMapping("/currency/getCurrency")
     BigDecimal getCurrencyRate(@RequestParam("code") String code,
                                @RequestParam(required = false) LocalDate onDate,
-                               @RequestHeader("Authorization") String authToken);
+                               @RequestHeader(value = "Authorization", required = false) String authToken);
 }

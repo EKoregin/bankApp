@@ -17,20 +17,22 @@ spring:
     name: bank-app-web
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
       client:
         provider:
           my_auth_server:
-            issuer-uri: http://localhost:9000
+            token-uri: http://${cloud.auth-host}:9000/oauth2/token
         registration:
-          bankAppClient:
-            client-id: bankAppClient
-            client-name: My Bank
-            client-secret: secret
+          interServiceClient:
+            client-id: interServiceClient
+            client-name: Inter Service Client
+            client-secret: interServiceClientSecret
+            authorization-grant-type: client_credentials
             provider: my_auth_server
             client-authentication-method: client_secret_basic
-            redirect-uri: http://localhost:8090/login/oauth2/code/{registrationId}
-            scope:
-              - openid
+            scope: internal
 
 eureka:
   client:

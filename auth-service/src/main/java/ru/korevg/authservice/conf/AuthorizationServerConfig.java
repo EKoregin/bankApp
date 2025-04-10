@@ -62,7 +62,16 @@ public class AuthorizationServerConfig {
                         .build())
                 .build();
 
-        return new InMemoryRegisteredClientRepository(bankAppClientWeb);
+        RegisteredClient interServiceClient = RegisteredClient
+                .withId(UUID.randomUUID().toString())
+                .clientId("interServiceClient")
+                .clientSecret(passwordEncoder.encode("interServiceClientSecret"))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .scope("internal")
+                .build();
+
+        return new InMemoryRegisteredClientRepository(bankAppClientWeb, interServiceClient);
     }
 
     @Bean

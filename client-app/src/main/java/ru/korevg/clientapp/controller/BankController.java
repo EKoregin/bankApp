@@ -2,7 +2,8 @@ package ru.korevg.clientapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.token.TokenService;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.korevg.clientapp.client.CurrencyServiceClient;
-import ru.korevg.clientapp.config.TokenFetcher;
+import ru.korevg.clientapp.service.TokenService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +24,11 @@ import java.util.List;
 public class BankController {
 
     private final CurrencyServiceClient currencyClient;
-    private final TokenFetcher tokenFetcher;
+    private final TokenService tokenService;
+
+    @Value("${spring.security.oauth2.client.registration.interServiceClient.client-id}")
+    private String clientId;
+
 
     @GetMapping
     public String index(Model model) {
@@ -44,9 +49,8 @@ public class BankController {
     public String getCurrencyRank(@RequestParam("date") LocalDate date,
                                   @RequestParam("currencyCode") String currencyCode,
                                   Model model) {
-        String authToken = "Bearer " + tokenFetcher.fetchToken(null).getTokenValue();
-        log.info("Fetched auth token: {}", authToken);
-        var currentRank = currencyClient.getCurrencyRate(currencyCode, date, authToken);
+        var currentRank = currencyClient.getCurrencyRate(currencyCode, date,
+                tokenService.getAccessToken(clientId, clientId));
 
         model.addAttribute("date", date);
         model.addAttribute("currencyCode", currencyCode);

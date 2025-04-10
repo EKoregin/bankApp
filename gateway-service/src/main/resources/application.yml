@@ -46,10 +46,10 @@ spring:
           uri: ${cloud.processing-service-url}
           predicates:
             - Path=/processing/**
-#        - id: bank-app-web
-#          uri: ${cloud.bank-app-url}
-#          predicates:
-#            - Path=/bank/**
+        - id: bank-app-web
+          uri: ${cloud.bank-app-url}
+          predicates:
+            - Path=/bank/**
         - id: auth-service
           uri: ${cloud.auth-service-url}
           predicates:
