@@ -45,7 +45,7 @@ public class ProcessingController {
     @Operation(description = "Внесение денег на счет пользователя")
     public AccountEntity putMoney(@PathVariable("accountId") Long accountId,
                                   @RequestBody PutAccountMoneyDTO data) {
-        return accountService.addMoneyToAccount(data.getUid(), accountId, data.getAmount());
+        return accountService.addMoneyToAccount(data.getUid(), accountId, null, ru.korevg.processing.model.Operation.PUT, data.getAmount());
     }
 
     @PutMapping("/exchange/{uid}")

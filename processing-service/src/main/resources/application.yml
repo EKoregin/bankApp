@@ -7,8 +7,18 @@ cloud:
   eureka-host: localhost
   currency-host: localhost
   currency-port: 8181
+  kafka-host: localhost
 
 spring:
+  kafka:
+    topics:
+      account:
+        name: account-events
+    bootstrap-servers: ${cloud.kafka-host}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   security:
     oauth2:
       resourceserver:
