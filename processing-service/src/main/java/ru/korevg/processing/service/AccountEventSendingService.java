@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class AccountEventSendingService {
 
-    private final KafkaTemplate<Long, String> kafkaTemplate;
+    private final KafkaTemplate<Long, Object> kafkaTemplate;
     private final ObjectMapper mapper;
 
     @Value("${spring.kafka.topics.account.name}")

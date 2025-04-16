@@ -14,7 +14,9 @@ public class AccountEvent {
     @NonNull
     private String uuid;
 
-    private long userId, accountId;
+    private Long accountId;
+
+    private Long userId;
 
     private Long fromAccount;
 

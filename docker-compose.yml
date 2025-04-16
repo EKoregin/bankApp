@@ -108,6 +108,20 @@ services:
       - processing_db
       - eureka-service
 
+  history-service:
+    build:
+      context: ./history
+    environment:
+      DB_HOST: processing_db
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+      KAFKA_HOST: kafka
+    ports:
+      - "8481:8481"
+    depends_on:
+      - processing_db
+      - eureka-service
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper

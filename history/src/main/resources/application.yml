@@ -1,0 +1,54 @@
+
+
+cloud:
+  auth-host: localhost
+  db-host: localhost
+  eureka-host: localhost
+  kafka-host: localhost
+
+spring:
+  kafka:
+    topics:
+      account:
+        name: account-events
+    bootstrap-servers: ${cloud.kafka-host}:9092
+    consumer:
+      auto-offset-reset: earliest
+      group-id: ${spring.application.name}-group
+      properties:
+        spring.json.trusted.packages: ru.korevg.history.model
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
+  application:
+    name: history
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://${cloud.db-host}:5432/account_history
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    url: jdbc:postgresql://${cloud.db-host}:5432/account_history
+    user: postgres
+    password: password
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka
+server:
+  port: 8481
+
+logging:
+  level:
+    com.fasterxml.jackson: DEBUG

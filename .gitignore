@@ -15,3 +15,11 @@
 /auth-service/HELP.md
 /auth-service/mvnw
 /auth-service/mvnw.cmd
+/client-app/.gitattributes
+/client-app/.gitignore
+/client-app/HELP.md
+/client-app/mvnw
+/client-app/mvnw.cmd
+/client-app/.mvn/
+/history/.gitattributes
+/history/.mvn/
