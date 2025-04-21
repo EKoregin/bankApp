@@ -13,8 +13,10 @@ import ru.korevg.processing.model.AccountEvent;
 import ru.korevg.processing.model.Operation;
 import ru.korevg.processing.repository.AccountRepository;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -39,7 +41,7 @@ public class AccountService {
 
         return account.map(acc -> {
             acc.setBalance(acc.getBalance().add(amount));
-            eventPublisher.publishEvent(createEvent(uid, acc, targetAccount, operation, amount));
+            eventPublisher.publishEvent(createEvent(UUID.randomUUID().toString(), acc, targetAccount, operation, amount));
             return accountRepository.save(acc);
         }).orElseThrow(() -> new IllegalArgumentException("Account with ID " + accountId + " not found"));
     }
@@ -54,7 +56,6 @@ public class AccountService {
     }
 
     private AccountEvent createEvent(String uid, AccountEntity acc, Long targetId, Operation operation, BigDecimal amount) {
-        var current = new Date();
         return AccountEvent.builder()
                 .uuid(uid)
                 .accountId(acc.getId())
@@ -63,7 +64,7 @@ public class AccountService {
                 .fromAccount(targetId)
                 .amount(amount)
                 .userId(acc.getUserId())
-                .created(current)
+                .created(LocalDateTime.now())
                 .build();
     }
 }

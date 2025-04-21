@@ -7,6 +7,9 @@ cloud:
   kafka-host: localhost
 
 spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
   kafka:
     topics:
       account:

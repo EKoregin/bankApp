@@ -1,12 +1,12 @@
 package ru.korevg.processing.model;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -29,7 +29,7 @@ public class AccountEvent {
     @NonNull
     private BigDecimal amount;
 
-    @NotNull
-    private Date created;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime created;
 
 }
