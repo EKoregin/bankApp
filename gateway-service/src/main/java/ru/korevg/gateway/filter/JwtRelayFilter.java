@@ -26,6 +26,7 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        log.info("...........................JwtRelayFilter.........................");
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .flatMap(auth -> {
@@ -47,6 +48,7 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
                                 .defaultIfEmpty(exchange);
                     } else if (auth instanceof JwtAuthenticationToken jwtAuth) {
                         log.debug("Request already has JwtAuthenticationToken, skipping token relay.");
+                        log.debug("Request URI: {}", exchange.getRequest().getURI());
                         return Mono.just(exchange);
                     } else {
                         log.warn("Unhandled authentication type: {}, skipping JwtRelayFilter", auth.getClass());

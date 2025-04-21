@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +43,11 @@ public class BankController {
     }
 
     @GetMapping("/currency")
-    public String currency() {
+    public String currency(@AuthenticationPrincipal Jwt jwt) {
+        log.info("Auth Token {}", jwt.getTokenValue());
+        String userId = jwt.getClaimAsString("userId");
+        log.info("User ID: {}", userId);
+        log.info("JWT Claims: {}", jwt.getClaims());
         return "currency";
     }
 

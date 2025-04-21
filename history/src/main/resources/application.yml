@@ -23,7 +23,7 @@ spring:
         jwt:
           issuer-uri: http://${cloud.auth-host}:9000
   application:
-    name: history
+    name: history-service
   jpa:
     database: postgresql
     show-sql: true
@@ -52,3 +52,5 @@ server:
 logging:
   level:
     com.fasterxml.jackson: DEBUG
+
+keySetURI: http://${cloud.auth-host}:9000/oauth2/jwks
