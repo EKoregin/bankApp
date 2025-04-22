@@ -37,6 +37,7 @@ public class BankController {
         List<String> links = new ArrayList<>();
         links.add("http://localhost:8080/bank/currency");
         links.add("http://localhost:8080/bank/token");
+        links.add("http://localhost:8080/bank/history");
 
         model.addAttribute("links", links);
         return "index";

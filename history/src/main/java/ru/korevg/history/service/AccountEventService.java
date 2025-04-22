@@ -16,4 +16,8 @@ public class AccountEventService {
     public List<AccountEvent> getAccountEventsByAccountId(Long accountId, Long userId) {
         return accountEventRepository.findAllByAccountIdAndUserIdOrderByCreatedDesc(accountId, userId);
     }
+
+    public List<AccountEvent> getAccountEventsByUserId(Long userId) {
+        return accountEventRepository.findAllByUserIdOrderByCreatedDesc(userId);
+    }
 }

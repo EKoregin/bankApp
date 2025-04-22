@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: notification-service
+
+telegram:
+  bot:
+    token: bot_token
+    username: @YourBotUsername

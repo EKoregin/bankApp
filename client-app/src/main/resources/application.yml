@@ -7,6 +7,8 @@ cloud:
   currency-host: localhost
   currency-port: 8181
   auth-host: 127.0.0.1
+  history-service:
+    url: localhost:8481
 
 currency-service:
   host: ${cloud.currency-host}

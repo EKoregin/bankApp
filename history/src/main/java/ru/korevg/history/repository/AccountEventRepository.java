@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface AccountEventRepository extends JpaRepository<AccountEvent, EventKey> {
     List<AccountEvent> findAllByAccountIdAndUserIdOrderByCreatedDesc(Long accountId, Long userId);
+
+    List<AccountEvent> findAllByUserIdOrderByCreatedDesc(Long userId);
 }

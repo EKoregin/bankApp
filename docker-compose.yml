@@ -79,6 +79,7 @@ services:
       EUREKA_HOST: eureka-service
       AUTH_HOST: auth-service
       CURRENCY_HOST: currency-service-1
+      HISTORY_SERVICE_URL: http://history-service:8481
     depends_on:
       - eureka-service
       - auth-service

@@ -5,6 +5,7 @@ ENV EUREKA_HOST=localhost
 ENV AUTH_HOST=localhost
 ENV CURRENCY_HOST=localhost
 ENV CURRENCY_PORT=8181
+ENV HISTORY_SERVICE_URL=localhost:8481
 
 EXPOSE 8090
 
@@ -14,4 +15,5 @@ ENTRYPOINT [ "sh", "-c", "java \
     --cloud.auth-host=$AUTH_HOST \
     --cloud.eureka-host=$EUREKA_HOST \
     --cloud.currency-host=$CURRENCY_HOST --cloud.currency-port=$CURRENCY_PORT \
+    --cloud.history-service.url=$HISTORY_SERVICE_URL \
     "]
