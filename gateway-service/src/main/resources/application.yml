@@ -1,0 +1,84 @@
+server:
+  port: 8080
+
+cloud:
+  eureka-host: localhost
+  processing-service-url: http://localhost:8182
+  currency-service-url: http://localhost:8181
+  bank-app-url: http://localhost:8090
+  auth-service-url: http://localhost:9000
+  history-service-url: http://localhost:8481
+
+spring:
+  application:
+   name: api-gateway-service
+  security:
+    oauth2:
+      client:
+        provider:
+          my_auth_server:
+            authorization-uri: http://localhost:9001/oauth2/authorize
+            token-uri: ${cloud.auth-service-url}/oauth2/token
+            jwk-set-uri: ${cloud.auth-service-url}/oauth2/jwks
+        registration:
+          bankAppClient:
+            client-id: bankAppClient
+            client-name: My Bank
+            client-secret: secret
+            provider: my_auth_server
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            scope:
+              - openid
+      resourceserver:
+        jwt:
+          issuer-uri: ${cloud.auth-service-url}
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: currency-service
+          uri: ${cloud.currency-service-url}
+          predicates:
+            - Path=/currency/**
+        - id: exchange-processing-service
+          uri: ${cloud.processing-service-url}
+          predicates:
+            - Path=/processing/**
+        - id: bank-app-web
+          uri: ${cloud.bank-app-url}
+          predicates:
+            - Path=/bank/**
+        - id: auth-service
+          uri: ${cloud.auth-service-url}
+          predicates:
+            - Path=/oauth2/**
+        - id: history-service
+          uri: ${cloud.history-service-url}
+          predicates:
+            - Path=/history/**
+          filters:
+            - PreserveHostHeader
+#            - AddRequestHeader=X-Original-Path, ${exchange.request.path.value}
+#            - AddRequestHeader=X-Original-URI, ${exchange.request.uri}
+      default-filters:
+        - TokenRelay
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka
+    enabled: true
+
+logging:
+  level:
+    ru.korevg.gateway.filter: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.cloud.gateway: TRACE

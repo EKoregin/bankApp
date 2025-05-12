@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  eureka-service:
+    build:
+      context: ./eureka-service
+    ports:
+      - "8761:8761"
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+    hostname: gateway-service
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_HOST: eureka-service
+      PROCESSING_URL: http://processing-service:8182
+      CURRENCY_URL: lb://currency-service
+      BANK_APP_URL: http://bank-app-web:8090
+      AUTH_SERVICE_URL: http://auth-service:9000
+      HISTORY_SERVICE_URL: http://history-service:8481
+    links:
+      - currency-service-1
+      - currency-service-2
+    depends_on:
+      - eureka-service
+      - auth-service
+
+  currency-service-1:
+    build:
+      context: ./currency-service
+    hostname: currency-service-1
+    container_name: currency-service-1
+    ports:
+      - "8281:8181"
+    environment:
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+    depends_on:
+      - eureka-service
+
+  currency-service-2:
+    build:
+      context: ./currency-service
+    hostname: currency-service-2
+    container_name: currency-service-2
+    ports:
+      - "8381:8181"
+    environment:
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+    depends_on:
+      - eureka-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+    hostname: auth-service
+    container_name: auth-service
+    ports:
+      - "9001:9000"
+    environment:
+      EUREKA_HOST: eureka-service
+      BANK_APP_URL: http://localhost:8080
+      AUTH_SERVICE_URL: http://auth-service:9000
+    depends_on:
+      - eureka-service
+
+  bank-app-web:
+    build:
+      context: ./client-app
+    hostname: client-app
+    container_name: client-app
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+      CURRENCY_HOST: currency-service-1
+      HISTORY_SERVICE_URL: http://history-service:8481
+    depends_on:
+      - eureka-service
+      - auth-service
+
+  processing_db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: processing
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+        - ./db/processing/data:/var/lib/postgresql/data
+    restart: always
+
+  processing-service:
+    build:
+      context: ./processing-service
+    environment:
+      DB_HOST: processing_db
+      EUREKA_HOST: eureka-service
+      CURRENCY_HOST: currency-service
+      AUTH_HOST: auth-service
+      KAFKA_HOST: kafka
+    ports:
+      - "8182:8182"
+    depends_on:
+      - processing_db
+      - eureka-service
+
+  history-service:
+    build:
+      context: ./history
+    environment:
+      DB_HOST: processing_db
+      EUREKA_HOST: eureka-service
+      AUTH_HOST: auth-service
+      KAFKA_HOST: kafka
+    ports:
+      - "8481:8481"
+    depends_on:
+      - processing_db
+      - eureka-service
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "account-events:4:1"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8585:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+#  nginx-web-client:
+#    image: nginx:1.14.2
+#    container_name: nginx-web-client
+#    volumes:
+#        - ./web-client/build/:/usr/share/nginx/html:ro
+#        - ./web-client/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+#    ports:
+#        - "3000:80"

@@ -3,20 +3,46 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="eureka-service" />
+        <module name="gateway-service" />
+      </profile>
       <profile name="Annotation profile for currency" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath>
+        <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="currency" />
+        <module name="currency-service" />
+      </profile>
+      <profile name="Annotation profile for processing" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok-mapstruct-binding/0.1.0/lombok-mapstruct-binding-0.1.0.jar" />
+        </processorPath>
+        <module name="processing-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gateway" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="currency" options="-parameters" />
+      <module name="currency-service" options="-parameters" />
+      <module name="eureka-service" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
+      <module name="processing-service" options="-parameters -Amapstruct.defaultComponentModel=spring" />
     </option>
   </component>
 </project>

@@ -1,0 +1,43 @@
+server:
+  port: 8090
+
+cloud:
+  db-host: localhost
+  eureka-host: localhost
+  currency-host: localhost
+  currency-port: 8181
+  auth-host: 127.0.0.1
+  history-service:
+    url: localhost:8481
+
+currency-service:
+  host: ${cloud.currency-host}
+  port: ${cloud.currency-port}
+
+spring:
+  application:
+    name: bank-app-web
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
+      client:
+        provider:
+          my_auth_server:
+            token-uri: http://${cloud.auth-host}:9000/oauth2/token
+        registration:
+          interServiceClient:
+            client-id: interServiceClient
+            client-name: Inter Service Client
+            client-secret: interServiceClientSecret
+            authorization-grant-type: client_credentials
+            provider: my_auth_server
+            client-authentication-method: client_secret_basic
+            scope: internal
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka

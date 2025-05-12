@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Курс</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Курс</h1>
+    <p>Дата: <span th:text="${date}"></span></p>
+    <p>Код валюты: <span th:text="${currencyCode}"></span></p>
+    <p>Курс: <span th:text="${rank}"></span></p>
+
+    <div class="mt-4">
+        <a href="/bank/currency" class="btn btn-secondary">Назад</a>
+        <a href="/bank" class="btn btn-primary">На главную</a>
+    </div>
+</div>
+</body>
+</html>

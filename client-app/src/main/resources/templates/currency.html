@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Курсы валют</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Курсы валют</h1>
+    <form th:action="@{/bank/getCurrencyRank}" method="post">
+        <div class="form-group">
+            <label for="date">Дата:</label>
+            <input type="date" id="date" name="date" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="currencyCode">Код валюты:</label>
+            <input type="text" id="currencyCode" name="currencyCode" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </div>
+    </form>
+    <div class="mt-4">
+        <a href="/bank" class="btn btn-secondary">На главную</a>
+    </div>
+</div>
+</body>
+</html>

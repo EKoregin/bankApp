@@ -1,0 +1,35 @@
+server:
+  port: 8181
+
+cloud:
+  eureka-host: localhost
+  auth-host: localhost
+
+logging:
+  level:
+    root: info
+
+spring:
+  application:
+    name: currency-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${cloud.auth-host}:9000
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+
+currency:
+  client:
+    url: "https://cbr.ru/scripts/XML_daily.asp?"
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka
+
+keySetURI: http://${cloud.auth-host}:9000/oauth2/jwks

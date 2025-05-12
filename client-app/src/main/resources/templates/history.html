@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+        .no-events {
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>User History (User ID: <span th:text="${userId}"></span>)</h1>
+
+<!-- Отображение ошибки, если есть -->
+<div th:if="${error}" class="error">
+    <p th:text="${error}"></p>
+</div>
+
+<!-- Отображение таблицы событий -->
+<div th:if="${events != null and !events.empty}">
+    <table>
+        <thead>
+        <tr>
+            <th>UUID</th>
+            <th>Account ID</th>
+            <th>From Account</th>
+            <th>Currency</th>
+            <th>Operation</th>
+            <th>Amount</th>
+            <th>Created</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${events}">
+            <td th:text="${event.uuid}"></td>
+            <td th:text="${event.accountId}"></td>
+            <td th:text="${event.fromAccount} ?: 'N/A'"></td>
+            <td th:text="${event.currency}"></td>
+            <td th:text="${event.operation}"></td>
+            <td th:text="${event.amount}"></td>
+            <td th:text="${event.created}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Сообщение, если событий нет -->
+<div th:if="${events == null or events.empty}" class="no-events">
+    <p>No events found for this user.</p>
+</div>
+</body>
+</html>
